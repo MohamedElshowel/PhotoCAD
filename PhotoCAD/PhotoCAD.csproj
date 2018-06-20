@@ -118,5 +118,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Archivelopers_Black.png" />
+    <Resource Include="Icons\Archivelopers_White.png" />
+    <Resource Include="Icons\PhotoIcon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
