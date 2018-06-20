@@ -1,0 +1,22 @@
+﻿<Window x:Class="PhotoCAD.CropWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PhotoCAD"
+        mc:Ignorable="d"
+        Title="CropWindow" Height="auto" Width="auto">
+    <StackPanel Orientation="Horizontal">
+        <StackPanel Margin="0 60">
+            <Button Content="Point" Padding="10" Margin="7"/>
+            <Button Content="Clear" Padding="10" Margin="7"/>
+            <Button Content="Full Screen" Padding="10" Margin="7"/>
+        </StackPanel>
+
+        <Border BorderThickness="1" BorderBrush="Black">
+            <Canvas Background="LightGoldenrodYellow" Name="CropCanvas" Width="600" MouseDown="CropCanvas_MouseDown">
+                <!--<Image Source="D://MyPhoto.jpg" Width="{Binding Path=ActualWidth, ElementName=CropCanvas}" Height="{Binding Path=ActualHeight, ElementName=CropCanvas}" Stretch="Uniform"/>-->
+            </Canvas>
+        </Border>
+    </StackPanel>
+</Window>
