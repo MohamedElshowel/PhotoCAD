@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PhotoCAD;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,6 @@ namespace Design.Presentation.Geometry
 {
     public class GCanvas
     {
-
-        public List<GShape> Shapes { get; set; }
         //
         private Canvas _canvas;
         private Vector translateVector;
@@ -29,11 +28,11 @@ namespace Design.Presentation.Geometry
         private Point start;   // Original Position of the mouse
         public GCanvas()
         {
-            ZoomMax = 25;
-            ZoomMin = .5;
+            ZoomMax = 100;
+            ZoomMin = .25;
             ZoomSpeed = .001;
             Zoom = 1;
-            Shapes = new List<GShape>();
+            
         }
 
         private void Initializer()
@@ -42,6 +41,27 @@ namespace Design.Presentation.Geometry
             Canvas.MouseLeftButtonUp += MyCanvas_MouseLeftButtonUp;
             Canvas.MouseMove += MyCanvas_MouseMove;
             Canvas.MouseLeftButtonDown += MyCanvas_MouseLeftButtonDown;
+            EventManager.RegisterClassHandler(typeof(Window),
+          Keyboard.KeyUpEvent, new KeyEventHandler(Canvas_KeyDown), true);
+            Canvas.KeyDown += Canvas_KeyDown;
+        }
+
+        private void Canvas_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (sender is  CropWindow)
+            {
+                switch (e.Key)
+                {
+                    case Key.Space:
+                        Canvas.RenderTransform = new ScaleTransform(1, 1); // transform Canvas size from mouse position
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            
+           
         }
 
         // Zoom on Mouse wheel
@@ -62,11 +82,7 @@ namespace Design.Presentation.Geometry
                 Canvas.RenderTransform = new ScaleTransform(Zoom, Zoom); // transform Canvas size
             }
         }
-
         /////
-
-
-
         void MyCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Canvas.ReleaseMouseCapture();
@@ -94,13 +110,6 @@ namespace Design.Presentation.Geometry
             origin.Y = Canvas.RenderTransform.Value.OffsetY;
         }
 
-        public void Render()
-        {
-            Shapes.ForEach(e => e.Draw());
-        }
-        public void Hide()
-        {
-            Shapes.ForEach(e => e.Remove());
-        }
+       
     }
 }

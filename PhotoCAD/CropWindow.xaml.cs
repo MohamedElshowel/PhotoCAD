@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Design.Presentation.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace PhotoCAD
     {
         private UIElement uiElement;
 
+        public DependencyObject SelectedElement { get; set; }
         Point currentPoint = new Point();
         int pointsNo = 0;
         double[] pointsLocationX = new double[4];
@@ -30,6 +32,8 @@ namespace PhotoCAD
             InitializeComponent();
 
             // Trying to Draw a Circle on Canvas;
+            //GeometryEngine gm = new GeometryEngine();
+            //gm.GCanvas.Canvas = CropCanvas;
 
         }
 
@@ -84,11 +88,36 @@ namespace PhotoCAD
                 pointsNo++;
             }
 
+            var canvas = sender as Canvas;
+            if (canvas == null)
+                return;
+
+            HitTestResult hitTestResult = VisualTreeHelper.HitTest(canvas, e.GetPosition(canvas));
+            if (hitTestResult.VisualHit is Ellipse)
+            {
+                SelectedElement = hitTestResult.VisualHit;
+            }
 
 
 
             // Try Zone
 
+        }
+
+        private void CropCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (SelectedElement != null)
+            {
+
+                var mousePos = e.GetPosition(CropCanvas);
+                var circle = ((Ellipse)SelectedElement)
+                    .RenderTransform = new TranslateTransform(mousePos.X, mousePos.Y);
+            }
+        }
+
+        private void CropCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            SelectedElement = null;
         }
     }
 }

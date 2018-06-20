@@ -14,7 +14,7 @@
         </StackPanel>
 
         <Border BorderThickness="1" BorderBrush="Black">
-            <Canvas Background="LightGoldenrodYellow" Name="CropCanvas" Width="600" MouseDown="CropCanvas_MouseDown">
+            <Canvas Background="LightGoldenrodYellow" Name="CropCanvas" Width="600" MouseDown="CropCanvas_MouseDown" MouseMove="CropCanvas_MouseMove" MouseUp="CropCanvas_MouseUp">
                 <!--<Image Source="D://MyPhoto.jpg" Width="{Binding Path=ActualWidth, ElementName=CropCanvas}" Height="{Binding Path=ActualHeight, ElementName=CropCanvas}" Stretch="Uniform"/>-->
             </Canvas>
         </Border>

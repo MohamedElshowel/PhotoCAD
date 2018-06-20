@@ -11,12 +11,11 @@ using System.Windows.Shapes;
 
 namespace Design.Presentation.Geometry
 {
-  
+
 
     public class GShape
     {
-        public double Scale { get; set; }
-        public ShapeType ShapeType { get; set; }
+
         public GCanvas GCanvas { get; set; }
         public Shape Shape { get; set; }
         public Thickness Thickness { get; set; }
@@ -24,7 +23,7 @@ namespace Design.Presentation.Geometry
         public Brush Stroke { get; set; }
         public int StrokeThickness { get; set; }
         public Brush Fill { get; set; }
-
+        public int Id { get; set; }
         public GShape(GCanvas gCanvas)
         {
             GCanvas = gCanvas;
@@ -33,27 +32,51 @@ namespace Design.Presentation.Geometry
             Stroke = Brushes.Black;
             StrokeThickness = 1;
             Fill = Brushes.Red;
-            Scale = 1;
             //
-
+            Id = GeometryEngine.Id;
+            GeometryEngine.Id++;
         }
-        public virtual void Draw()
+
+
+
+        public virtual void Render()
         {
             Shape.Stroke = Stroke;
             Shape.Fill = Fill;
             Shape.Visibility = Visibility;
             Shape.StrokeThickness = StrokeThickness;
-            if (GCanvas.Canvas.Children.Contains(Shape)) return;
+            if (GCanvas.Canvas.Children.Contains(Shape))
+            {
+                return;
+            }
             GCanvas.Canvas.Children.Add(Shape);
+
         }
         public virtual void Remove()
-        {
+        {/*----------> Consider Revision*/
             if (!GCanvas.Canvas.Children.Contains(Shape)) return;
             GCanvas.Canvas.Children.Remove(Shape);
+
         }
         public virtual void Hide()
         {
-            Shape.Visibility = Visibility=Visibility.Collapsed;
+            Shape.Visibility = Visibility = Visibility.Collapsed;
+        }
+        public virtual void New()
+        {
+
+        }
+        public virtual void SetScale(double value)
+        {
+
+        }
+        public virtual void SetTranslate(double valueX,double valueY)
+        {
+
+        }
+        public virtual void Rotate(double angle)
+        {
+
         }
 
     }

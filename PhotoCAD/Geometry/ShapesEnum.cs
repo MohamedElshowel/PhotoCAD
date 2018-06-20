@@ -8,9 +8,17 @@ namespace Design.Presentation.Geometry
 {
     public enum ShapeType
     {
-        Point,
-        Circle,
         Line,
+        Triangle,
         Rectangle,
+        Circle,
+        Arrow,
+        Roller,
+        Hinged,
+        Fixed,
+        Point,
+        Cross,
+        ArrowLoad,
+
     }
 }
