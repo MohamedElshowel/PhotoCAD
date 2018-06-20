@@ -47,7 +47,7 @@ namespace Design.Presentation.Geometry
 
             Polygon.HorizontalAlignment = HorizontalAlignment.Left;
             Polygon.VerticalAlignment = VerticalAlignment.Center;
-            GCanvas.Shapes.Add(this);
+           
 
         }
         public GPolygon(GCanvas gCanvas) : this(gCanvas, new PointCollection(), default(Point), default(Point))
