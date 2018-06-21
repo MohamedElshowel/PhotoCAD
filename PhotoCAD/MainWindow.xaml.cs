@@ -20,12 +20,16 @@ namespace PhotoCAD
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool stopped = true;
+        public string InputFileText { get; set; }
+        public string OutputFolderText { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
 
             // To load the 'Upload Photo' from 'Icons' Folder.
-            ImageIcon.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + "Icons\\PhotoIcon.png"));
+            //ImageIcon.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + "Icons\\PhotoIcon.png"));
         }
 
         #region Menu Items
@@ -62,11 +66,11 @@ namespace PhotoCAD
             if (result == true && result != null)
             {
                 // Open document
-                string filename = fileDialog.FileName;
-                InputFileName_TB.Text = filename;
+                InputFileName_TB.Text = fileDialog.FileName;
+                InputFileText = fileDialog.FileName;
 
                 //Load the Image in the Application
-                ImageIcon.Source = (ImageSource)new ImageSourceConverter().ConvertFrom(filename);
+                ImageIcon.Source = (ImageSource)new ImageSourceConverter().ConvertFrom(fileDialog.FileName);
             }
 
         }
@@ -81,6 +85,7 @@ namespace PhotoCAD
                 {
                     // Get the selected file name and display in a TextBox
                     OutputFilePath_TB.Text = dialog.SelectedPath.ToString();
+                    OutputFolderText = dialog.SelectedPath.ToString();
                 }
             }
         }
@@ -92,69 +97,74 @@ namespace PhotoCAD
 
         private void Start_btn_Click(object sender, RoutedEventArgs e)
         {
-            if (InputFileName_TB.Text != "" && OutputFilePath_TB.Text != "")
+            if (stopped)
             {
-                //Disable all Browse Butons in the Main Window
-                InputBrowse_btn.IsEnabled = false;
-                OutputBrowse_btn.IsEnabled = false;
-                InputFileName_TB.IsEnabled = false;
-                OutputFilePath_TB.IsEnabled = false;
-                ImageIcon.IsEnabled = false;
-
-                CropWindow cropWindow = new CropWindow();
-                cropWindow.Show();
-
-                // To Load the selected image to the Crop Canvas Background
-                ImageBrush ib = new ImageBrush();
-                ib.ImageSource = new BitmapImage(new Uri(InputFileName_TB.Text, UriKind.Relative));
-                cropWindow.CropCanvas.Background = ib;
-                
-                //Get the Image Width , Height and Aspect Ratio
-                double imageWidth = ib.ImageSource.Width;
-                double imageHeight = ib.ImageSource.Height;
-                double imageRatio = imageWidth / imageHeight;
-
-                if (imageWidth > 1200)  //Resize the image if it is too Big
+                if (InputFileName_TB.Text != "" && OutputFilePath_TB.Text != "")
                 {
-                    imageWidth = 1200;
+                    Start_btn.Content = "■  Stop";
+                    stopped = false;
+                    //Disable all Browse Butons in the Main Window
+                    InputBrowse_btn.IsEnabled = false;
+                    OutputBrowse_btn.IsEnabled = false;
+                    InputFileName_TB.IsEnabled = false;
+                    OutputFilePath_TB.IsEnabled = false;
+                    ImageIcon.IsEnabled = false;
+
+                    CropWindow cropWindow = new CropWindow();
+                    cropWindow.MainWindowProperty = this;
+                    cropWindow.Show();
+
+                    // To Load the selected image to the Crop Canvas Background
+                    ImageBrush ib = new ImageBrush();
+                    ib.ImageSource = new BitmapImage(new Uri(InputFileName_TB.Text, UriKind.Relative));
+                    cropWindow.CropCanvas.Background = ib;
+
+                    //Get the Image Width , Height and Aspect Ratio
+                    double imageWidth = ib.ImageSource.Width;
+                    double imageHeight = ib.ImageSource.Height;
+                    double imageRatio = imageWidth / imageHeight;
+
+                    if (imageWidth > 1200)  //Resize the image if it is too Big
+                    {
+                        imageWidth = 1200;
+                    }
+                    if (imageWidth < 800)  //Resize the image if it is too Small
+                    {
+                        imageWidth = 800;
+                    }
+                    cropWindow.CropCanvas.Width = imageWidth;
+                    cropWindow.CropCanvas.Height = imageWidth / imageRatio;
+                    //cropWindow.Width = imageWidth + 200;
+                    //cropWindow.Height = (cropWindow.Width) / imageRatio;
                 }
-                if (imageWidth < 800)  //Resize the image if it is too Small
+                else if (InputFileName_TB.Text == "" && OutputFilePath_TB.Text == "")
                 {
-                    imageWidth = 800;
+                    MessageBoxResult boxResult = MessageBox.Show("Please select the Photo and the Output Folder!", "Missing Fields",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
-                cropWindow.CropCanvas.Width = imageWidth;
-                cropWindow.CropCanvas.Height = imageWidth / imageRatio;
-                //cropWindow.Width = imageWidth + 200;
-                //cropWindow.Height = (cropWindow.Width) / imageRatio;
+                else if (InputFileName_TB.Text == "")
+                {
+                    MessageBoxResult boxResult = MessageBox.Show("Please select the Photo!", "Missing Field",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else if (OutputFilePath_TB.Text == "")
+                {
+                    MessageBoxResult boxResult = MessageBox.Show("Please select the Output Folder!", "Missing Field",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
-            else if (InputFileName_TB.Text == "" && OutputFilePath_TB.Text == "")
+            else
             {
-                MessageBoxResult boxResult = MessageBox.Show("Please select the Photo and the Output Folder!", "Missing Fields",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            else if (InputFileName_TB.Text == "")
-            {
-                MessageBoxResult boxResult = MessageBox.Show("Please select the Photo!", "Missing Field",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            else if (OutputFilePath_TB.Text == "")
-            {
-                MessageBoxResult boxResult = MessageBox.Show("Please select the Output Folder!", "Missing Field",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
+                Start_btn.Content = "Start";
+                stopped = true;
 
-        private void Stop_btn_Click(object sender, RoutedEventArgs e)
-        {
-            //Enable all Browse Butons in the Main Window
-            InputBrowse_btn.IsEnabled = true;
-            OutputBrowse_btn.IsEnabled = true;
-            InputFileName_TB.IsEnabled = true;
-            OutputFilePath_TB.IsEnabled = true;
-            ImageIcon.IsEnabled = true;
-
-            //Just Trying
-            
+                //Enable all Browse Butons in the Main Window
+                InputBrowse_btn.IsEnabled = true;
+                OutputBrowse_btn.IsEnabled = true;
+                InputFileName_TB.IsEnabled = true;
+                OutputFilePath_TB.IsEnabled = true;
+                ImageIcon.IsEnabled = true;
+            }
         }
     }
 }

@@ -54,7 +54,6 @@
                 </Grid>
                 <Image Source="Icons/PhotoIcon.png" Height="300" Margin="0 20" Name="ImageIcon" MouseDown="ImageIcon_MouseDown" />
                 <Button Content="Start" Width="100" Height="30"   VerticalAlignment="Bottom" Name="Start_btn" Click="Start_btn_Click"/>
-                <Button Content="■  Stop" Width="100" Height="30"   VerticalAlignment="Bottom" Name="Stop_btn" Click="Stop_btn_Click"/>
             </StackPanel>
             
         </Border>

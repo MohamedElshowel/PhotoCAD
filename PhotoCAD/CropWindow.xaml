@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PhotoCAD"
         mc:Ignorable="d"
-        Title="CropWindow" Height="auto" Width="auto">
+        Title="CropWindow" Height="auto" Width="auto" Loaded="Window_Loaded">
     <StackPanel Orientation="Horizontal">
         <StackPanel Margin="0 60">
             <Button Content="Point" Padding="10" Margin="7"/>
