@@ -8,14 +8,16 @@
         Title="CropWindow" Height="auto" Width="auto" Loaded="Window_Loaded">
     <StackPanel Orientation="Horizontal">
         <StackPanel Margin="0 60">
-            <Button Content="Point" Padding="10" Margin="7"/>
-            <Button Content="Clear" Padding="10" Margin="7"/>
-            <Button Content="Full Screen" Padding="10" Margin="7"/>
+            <Button Content="Next >>" Padding="10" Margin="7 10"/>
+            <Button Content="Add Points" Padding="10" Margin="7 10" Name="AddPoints_BTN" Click="AddPoints_BTN_Click"/>
+            <Button Content="Clear" Padding="10" Margin="7 10" Name="Clear_BTN" Click="Clear_BTN_Click"/>
+            <Button Content="Full Size" Padding="10" Margin="7 10" Name="FullSize_BTN" Click="FullSize_BTN_Click"/>
+            <Button Content="Rotate" Padding="10" Margin="7 10" Name="Rotate_BTN" Click="Rotate_BTN_Click"/>
+            <Button Content="Mirror" Padding="10" Margin="7 10" Name="Mirror_BTN" Click="Mirror_BTN_Click"/>
         </StackPanel>
 
         <Border BorderThickness="1" BorderBrush="Black">
-            <Canvas Background="LightGoldenrodYellow" Name="CropCanvas" Width="600" MouseDown="CropCanvas_MouseDown" MouseMove="CropCanvas_MouseMove" MouseUp="CropCanvas_MouseUp">
-                <!--<Image Source="D://MyPhoto.jpg" Width="{Binding Path=ActualWidth, ElementName=CropCanvas}" Height="{Binding Path=ActualHeight, ElementName=CropCanvas}" Stretch="Uniform"/>-->
+            <Canvas Background="LightGoldenrodYellow" Name="CropCanvas" MouseDown="CropCanvas_MouseDown" MouseMove="CropCanvas_MouseMove" MouseUp="CropCanvas_MouseUp">
             </Canvas>
         </Border>
     </StackPanel>

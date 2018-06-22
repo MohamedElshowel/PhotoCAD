@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PhotoCAD"
         mc:Ignorable="d"
-        Title="PhotoCAD" Height="550" Width="500">
+        Title="PhotoCAD" Height="600" Width="550">
 
     <StackPanel>
         <DockPanel>
@@ -43,7 +43,7 @@
                     <TextBox Grid.Column="0" Name="InputFileName_TB" Margin="12 0" IsReadOnly="True" Background="#eee" MouseDoubleClick="Browse_btn_Click"/>
                     <Button Grid.Column="1" Content="Browse..." Margin="2 0 12 0" Name="InputBrowse_btn" Click="Browse_btn_Click" />
                 </Grid>
-                    <TextBlock Text="Please choose the Output Folder" Padding="12 12 0 4"/>
+                <TextBlock Text="Please choose the Output Folder" Padding="12 12 0 4"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -52,10 +52,20 @@
                     <TextBox Grid.Column="0" Name="OutputFilePath_TB" Margin="12 0" IsReadOnly="True" Background="#eee" MouseDoubleClick="BrowseFolder_btn_Click"/>
                     <Button Grid.Column="1" Content="Browse..." Margin="0 0 12 0" Name="OutputBrowse_btn" Click="BrowseFolder_btn_Click"/>
                 </Grid>
+                <TextBlock Text="Please select the type of detection" Padding="12 12 0 6"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <RadioButton Grid.Column="0" Content="No Detection" Name="None_RB" Margin="20 0"/>
+                    <RadioButton Grid.Column="1" Content="Plan / Border" Name="Plan_RB" Margin="12 0" IsChecked="True"/>
+                    <RadioButton Grid.Column="2" Content="White Paper " Name="WhitePaper_RB" Margin="12 0" />
+                </Grid>
                 <Image Source="Icons/PhotoIcon.png" Height="300" Margin="0 20" Name="ImageIcon" MouseDown="ImageIcon_MouseDown" />
                 <Button Content="Start" Width="100" Height="30"   VerticalAlignment="Bottom" Name="Start_btn" Click="Start_btn_Click"/>
             </StackPanel>
-            
         </Border>
     </StackPanel>
 </Window>

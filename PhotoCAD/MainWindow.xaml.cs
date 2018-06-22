@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,9 +22,18 @@ namespace PhotoCAD
     /// </summary>
     public partial class MainWindow : Window
     {
+        // Importing C++ function from dll to close any OpenCV (C++) window
+        [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int CloseCPPWindows();
+
         bool stopped = true;
         public string InputFileText { get; set; }
         public string OutputFolderText { get; set; }
+        public int ImageHeight { get; set; }
+        public int ImageWidth { get; set; }
+        public double ImageRatio { get; set; }
+        public double ScaleRatio { get; set; } = 1;
+
 
         public MainWindow()
         {
@@ -69,6 +80,9 @@ namespace PhotoCAD
                 InputFileName_TB.Text = fileDialog.FileName;
                 InputFileText = fileDialog.FileName;
 
+                // Pass the Folder to the 'OutputFolder_TB'
+                OutputFilePath_TB.Text = System.IO.Path.GetDirectoryName(InputFileText);
+
                 //Load the Image in the Application
                 ImageIcon.Source = (ImageSource)new ImageSourceConverter().ConvertFrom(fileDialog.FileName);
             }
@@ -103,16 +117,27 @@ namespace PhotoCAD
                 {
                     Start_btn.Content = "■  Stop";
                     stopped = false;
-                    //Disable all Browse Butons in the Main Window
+                    // Disable all Browse Butons in the Main Window
                     InputBrowse_btn.IsEnabled = false;
                     OutputBrowse_btn.IsEnabled = false;
                     InputFileName_TB.IsEnabled = false;
                     OutputFilePath_TB.IsEnabled = false;
                     ImageIcon.IsEnabled = false;
+                    None_RB.IsEnabled = false;
+                    Plan_RB.IsEnabled = false;
+                    WhitePaper_RB.IsEnabled = false;
 
                     CropWindow cropWindow = new CropWindow();
                     cropWindow.MainWindowProperty = this;
-                    cropWindow.Show();
+
+                    // Get the Actual Height and Width of the Image
+                    using (FileStream fileStream = new FileStream(InputFileName_TB.Text, FileMode.Open, FileAccess.Read))
+                    {
+                        BitmapFrame frame = BitmapFrame.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
+                        ImageHeight = frame.PixelHeight;
+                        ImageWidth = frame.PixelWidth;
+                        ImageRatio = ImageWidth / ImageHeight;
+                    }
 
                     // To Load the selected image to the Crop Canvas Background
                     ImageBrush ib = new ImageBrush();
@@ -120,22 +145,34 @@ namespace PhotoCAD
                     cropWindow.CropCanvas.Background = ib;
 
                     //Get the Image Width , Height and Aspect Ratio
-                    double imageWidth = ib.ImageSource.Width;
-                    double imageHeight = ib.ImageSource.Height;
-                    double imageRatio = imageWidth / imageHeight;
+                    double imgWidth = ib.ImageSource.Width;
+                    double imgHeight = ib.ImageSource.Height;
+                    double imgRatio = imgHeight / imgWidth;
 
-                    if (imageWidth > 1200)  //Resize the image if it is too Big
+
+                    if (imgWidth > 1450)  //Resize the image if it is too Big
                     {
-                        imageWidth = 1200;
+                        imgWidth = 1450;
+                        imgHeight = imgWidth * imgRatio;
                     }
-                    if (imageWidth < 800)  //Resize the image if it is too Small
+                    else if (imgWidth < 600)  //Resize the image if it is too Small
                     {
-                        imageWidth = 800;
+                        imgWidth = 600;
+                        imgHeight = imgWidth * imgRatio;
                     }
-                    cropWindow.CropCanvas.Width = imageWidth;
-                    cropWindow.CropCanvas.Height = imageWidth / imageRatio;
-                    //cropWindow.Width = imageWidth + 200;
-                    //cropWindow.Height = (cropWindow.Width) / imageRatio;
+
+                    //To Set the Scale Factor from Actual Image Size and the Canvas Size
+                    ScaleRatio = ImageWidth / imgWidth;
+
+                    //To Set the Canvas Size relative to the image
+                    cropWindow.CropCanvas.Width = imgWidth;
+                    cropWindow.CropCanvas.Height = imgHeight;
+
+                    //To Set the Canvas Size relative to the Canvas/Image
+                    cropWindow.Width = imgWidth + 110;
+                    cropWindow.Height = (cropWindow.CropCanvas.Height) + 35;
+                    cropWindow.Show();
+
                 }
                 else if (InputFileName_TB.Text == "" && OutputFilePath_TB.Text == "")
                 {
@@ -155,6 +192,15 @@ namespace PhotoCAD
             }
             else
             {
+                //Close All C# Windows except the 'MainWindow'
+                //for (int intCounter = App.Current.Windows.Count - 1; intCounter >= 1; intCounter--)
+                //    App.Current.Windows[intCounter].Close();
+                System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+                Application.Current.Shutdown();
+
+                //Close All C++ Windows
+                CloseCPPWindows();
+
                 Start_btn.Content = "Start";
                 stopped = true;
 
@@ -164,6 +210,9 @@ namespace PhotoCAD
                 InputFileName_TB.IsEnabled = true;
                 OutputFilePath_TB.IsEnabled = true;
                 ImageIcon.IsEnabled = true;
+                None_RB.IsEnabled = true;
+                Plan_RB.IsEnabled = true;
+                WhitePaper_RB.IsEnabled = true;
             }
         }
     }
