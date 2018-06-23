@@ -9,7 +9,7 @@
     <StackPanel Orientation="Horizontal">
         <StackPanel Margin="0 60">
             <Button Content="Next >>" Padding="10" Margin="7 10"/>
-            <Button Content="Add Points" Padding="10" Margin="7 10" Name="AddPoints_BTN" Click="AddPoints_BTN_Click"/>
+            <Button Content="Save Image" Padding="10" Margin="7 10" Name="SaveImage_BTN" Click="SaveImage_BTN_Click"/>
             <Button Content="Clear" Padding="10" Margin="7 10" Name="Clear_BTN" Click="Clear_BTN_Click"/>
             <Button Content="Full Size" Padding="10" Margin="7 10" Name="FullSize_BTN" Click="FullSize_BTN_Click"/>
             <Button Content="Rotate" Padding="10" Margin="7 10" Name="Rotate_BTN" Click="Rotate_BTN_Click"/>

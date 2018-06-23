@@ -33,10 +33,11 @@ namespace PhotoCAD
         [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int Return20();
         [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int MainFunction(string photoFullPath, string folderPath, double[] cornerPoints, char otherTransformation, bool isWarped);
+        public static extern int MainFunction(string photoFullPath, string folderPath, string fileName, double[] cornerPoints, char otherTransformation, bool isWarped);
 
         // Member Variables
         public DependencyObject SelectedElement { get; set; }
+        public string FileName { get; set; }
         Point currentPoint = new Point();
         int pointsNo = 0;
         double[] pointsLocationX = new double[4];
@@ -68,7 +69,6 @@ namespace PhotoCAD
 
             // Initializing DLL Function 'BordersDetection'
             IntPtr ptr = BordersDetection(MainWindowProperty.InputFileText, detectionType);
-
             double[] pointsArray = new double[8];
             Marshal.Copy(ptr, pointsArray, 0, 8);
 
@@ -99,12 +99,13 @@ namespace PhotoCAD
                    new TranslateTransform(pointsLocationX[i] - cropCircle.Width / 2, pointsLocationY[i] - cropCircle.Width / 2);
                 cropPoints[i] = cropCircle;
                 CropCanvas.Children.Add(cropPoints[i]);
-                pointsNo++;
+                pointsNo = 4;
+                DrawLines();
             }
 
             char otherTransformation = 'n';
             // Call the Warping Function from the dll
-            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, pointsArray, otherTransformation, false);
+            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsArray, otherTransformation, false);
         }
 
 
@@ -128,6 +129,7 @@ namespace PhotoCAD
                     new TranslateTransform(currentPoint.X - cropCircles.Width / 2, currentPoint.Y - cropCircles.Height / 2);
                 pointsLocationX[pointsNo] = currentPoint.X;
                 pointsLocationY[pointsNo] = currentPoint.Y;
+                cropPoints[pointsNo] = cropCircles;
                 CropCanvas.Children.Add(cropCircles);
 
                 if (0 < pointsNo)
@@ -168,7 +170,6 @@ namespace PhotoCAD
             {
                 SelectedElement = hitTestResult.VisualHit;
             }
-
         }
 
         private void CropCanvas_MouseMove(object sender, MouseEventArgs e)
@@ -190,62 +191,75 @@ namespace PhotoCAD
         {
             if (0 < pointsNo)
             {
-                Line cropLine = new Line
+                for (int i = 0; i < pointsNo; i++)
                 {
-                    Stroke = Brushes.DarkSlateGray,
-                    StrokeThickness = 1,
-                    X1 = pointsLocationX[pointsNo - 1],
-                    X2 = pointsLocationX[pointsNo],
-                    Y1 = pointsLocationY[pointsNo - 1],
-                    Y2 = pointsLocationY[pointsNo],
-                };
-                CropCanvas.Children.Add(cropLine);
+                    if (i < 3)
+                    {
+                        Line cropLine = new Line();
+                        cropLine.Stroke = Brushes.DarkSlateGray;
+                        cropLine.StrokeThickness = 1;
+                        cropLine.X1 = pointsLocationX[i];
+                        cropLine.Y1 = pointsLocationY[i];
+                        cropLine.X2 = pointsLocationX[i + 1];
+                        cropLine.Y2 = pointsLocationY[i + 1];
+                        CropCanvas.Children.Add(cropLine);
+                    }
+                    else if (i == 3)
+                    {
+                        Line cropLine = new Line
+                        {
+                            Stroke = Brushes.DarkSlateGray,
+                            StrokeThickness = 1,
+                            X1 = pointsLocationX[i],
+                            X2 = pointsLocationX[0],
+                            Y1 = pointsLocationY[i],
+                            Y2 = pointsLocationY[0],
+                        };
+                        CropCanvas.Children.Add(cropLine);
+                    }
+                }
             }
-
-            if (pointsNo == 3)
-            {
-                Line cropLine = new Line
-                {
-                    Stroke = Brushes.DarkSlateGray,
-                    StrokeThickness = 1,
-                    X1 = pointsLocationX[pointsNo],
-                    X2 = pointsLocationX[0],
-                    Y1 = pointsLocationY[pointsNo],
-                    Y2 = pointsLocationY[0],
-                };
-                CropCanvas.Children.Add(cropLine);
-            }
-        }
-
-        private void AddPoints_BTN_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void Clear_BTN_Click(object sender, RoutedEventArgs e)
         {
             char otherTransformation = 'c';
-            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, pointsLocation, otherTransformation, false);
+            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsLocation, otherTransformation, false);
             // Clear All Array Elements
             Array.Clear(cropPoints, 0, 4);
+
+            // Remove all circles from the screen
+            CropCanvas.Children.Clear();
+            pointsNo = 0;
         }
 
         private void Rotate_BTN_Click(object sender, RoutedEventArgs e)
         {
             char otherTransformation = 'r';
-            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, pointsLocation, otherTransformation, false);
+            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsLocation, otherTransformation, false);
         }
 
         private void Mirror_BTN_Click(object sender, RoutedEventArgs e)
         {
             char otherTransformation = 'm';
-            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, pointsLocation, otherTransformation, false);
+            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsLocation, otherTransformation, false);
         }
 
         private void FullSize_BTN_Click(object sender, RoutedEventArgs e)
         {
             char otherTransformation = 'f';
-            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, pointsLocation, otherTransformation, false);
+            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsLocation, otherTransformation, false);
+        }
+
+        private void SaveImage_BTN_Click(object sender, RoutedEventArgs e)
+        {
+            char otherTransformation = 's';
+            int success = MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsLocation, otherTransformation, false);
+            if (success == 0)
+            {
+                MessageBoxResult boxResult = MessageBox.Show("The Photo Saved Successfully", "Saved Succeeded",
+                       MessageBoxButton.OK, MessageBoxImage.None);
+            }
         }
     }
 }

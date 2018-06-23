@@ -163,6 +163,7 @@ namespace PhotoCAD
 
                     //To Set the Scale Factor from Actual Image Size and the Canvas Size
                     ScaleRatio = ImageWidth / imgWidth;
+                    cropWindow.FileName = System.IO.Path.GetFileName(InputFileName_TB.Text);
 
                     //To Set the Canvas Size relative to the image
                     cropWindow.CropCanvas.Width = imgWidth;
