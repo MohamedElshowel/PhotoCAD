@@ -113,7 +113,27 @@ namespace PhotoCAD
         {
             if (stopped)
             {
-                if (InputFileName_TB.Text != "" && OutputFilePath_TB.Text != "")
+                if (InputFileName_TB.Text == "" && OutputFilePath_TB.Text == "")
+                {
+                    MessageBoxResult boxResult = MessageBox.Show("Please select the Photo and the Output Folder!", "Missing Fields",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else if (InputFileName_TB.Text == "")
+                {
+                    MessageBoxResult boxResult = MessageBox.Show("Please select the Photo!", "Missing Field",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else if (OutputFilePath_TB.Text == "")
+                {
+                    MessageBoxResult boxResult = MessageBox.Show("Please select the Output Folder!", "Missing Field",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                if (OutputFilePath_TB.Text == System.IO.Path.GetDirectoryName(InputFileText))
+                {
+                    MessageBoxResult boxResult = MessageBox.Show("Please select different Output Folder!", "Choosing the same folder conflict",
+                       MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else if (InputFileName_TB.Text != "" && OutputFilePath_TB.Text != "")
                 {
                     Start_btn.Content = "■  Stop";
                     stopped = false;
@@ -131,26 +151,11 @@ namespace PhotoCAD
                     cropWindow.MainWindowProperty = this;
 
                     // Load the Image to the Canvas
-                    LoadImageToCanvas(cropWindow);
+                    LoadImageToCanvas(cropWindow, InputFileName_TB.Text);
                     cropWindow.Show();
-
-                }
-                else if (InputFileName_TB.Text == "" && OutputFilePath_TB.Text == "")
-                {
-                    MessageBoxResult boxResult = MessageBox.Show("Please select the Photo and the Output Folder!", "Missing Fields",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                else if (InputFileName_TB.Text == "")
-                {
-                    MessageBoxResult boxResult = MessageBox.Show("Please select the Photo!", "Missing Field",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                else if (OutputFilePath_TB.Text == "")
-                {
-                    MessageBoxResult boxResult = MessageBox.Show("Please select the Output Folder!", "Missing Field",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
+
             else
             {
                 //Close All C# Windows except the 'MainWindow'
@@ -179,10 +184,10 @@ namespace PhotoCAD
 
         }
 
-        public void LoadImageToCanvas(CropWindow window)
+        public void LoadImageToCanvas(CropWindow window, string imagePath)
         {
             // Get the Actual Height and Width of the Image
-            using (FileStream fileStream = new FileStream(InputFileName_TB.Text, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
             {
                 BitmapFrame frame = BitmapFrame.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
                 ImageHeight = frame.PixelHeight;
@@ -192,7 +197,7 @@ namespace PhotoCAD
 
             // To Load the selected image to the Crop Canvas Background
             ImageBrush ib = new ImageBrush();
-            ib.ImageSource = new BitmapImage(new Uri(InputFileName_TB.Text, UriKind.Relative));
+            ib.ImageSource = new BitmapImage(new Uri(imagePath, UriKind.Relative));
             window.CropCanvas.Background = ib;
 
             //Get the Image Width , Height and Aspect Ratio
@@ -214,7 +219,7 @@ namespace PhotoCAD
 
             //To Set the Scale Factor from Actual Image Size and the Canvas Size
             ScaleRatio = ImageWidth / imgWidth;
-            window.FileName = System.IO.Path.GetFileNameWithoutExtension(InputFileName_TB.Text);
+            window.FileName = System.IO.Path.GetFileNameWithoutExtension(imagePath);
 
             //To Set the Canvas Size relative to the image
             window.CropCanvas.Width = imgWidth;

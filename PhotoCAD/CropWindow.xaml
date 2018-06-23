@@ -19,10 +19,7 @@
                         <Button Content="Mirror" Padding="10" Margin="7 10" Name="Mirror_BTN" Click="Mirror_BTN_Click"/>
                     </StackPanel>
 
-                    <Border BorderThickness="1" BorderBrush="Black">
-                        <Canvas Background="LightGoldenrodYellow" Name="CropCanvas" MouseDown="CropCanvas_MouseDown" MouseMove="CropCanvas_MouseMove" MouseUp="CropCanvas_MouseUp">
-                        </Canvas>
-                    </Border>
+                    <Canvas Background="LightGoldenrodYellow" Name="CropCanvas" MouseDown="CropCanvas_MouseDown" MouseMove="CropCanvas_MouseMove" MouseUp="CropCanvas_MouseUp"/>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Edge Detection" IsEnabled="False" Width="110" Name="EdgeDetection_tab">
@@ -33,11 +30,11 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Please choose Level of Details" Padding="60 10"/>
-                        <Button Grid.Column="1" Margin="20 3 60 0" Content="Next >>" Name="F"/>
+                        <Button Grid.Column="1" Margin="20 3 60 0" Content="Next >>" Name="ToDXF_btn" Click="ToDXF_btn_Click"/>
                     </Grid>
                     <DockPanel VerticalAlignment="Top" Margin="60 5">
                         <TextBox Text="{Binding ElementName=slValue, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
-                        <Slider Maximum="100" TickPlacement="BottomRight" TickFrequency="20" IsSnapToTickEnabled="True" Name="SliderValue" />
+                        <Slider  Name="SliderValue" Minimum="0" Maximum="100" AutoToolTipPlacement="BottomRight" TickPlacement="BottomRight" TickFrequency="10" IsSnapToTickEnabled="True" Value="50" RenderTransformOrigin="0.615,0.567" Thumb.DragCompleted="SliderValue_DragCompleted"/>
                     </DockPanel>
                     <StackPanel>
                     <Canvas Background="LightGoldenrodYellow" Name="EdgeDetectionCanvas" MouseDown="CropCanvas_MouseDown" MouseMove="CropCanvas_MouseMove" MouseUp="CropCanvas_MouseUp"/>

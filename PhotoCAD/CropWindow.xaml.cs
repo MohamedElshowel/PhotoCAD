@@ -34,7 +34,12 @@ namespace PhotoCAD
         [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int Return20();
         [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int MainFunction(string photoFullPath, string folderPath, string fileName, double[] cornerPoints, char otherTransformation, bool isWarped);
+        public static extern int WarpImage(string photoPath, double[] cornerPoints, char otherTransformation, string fileName, string folderPath);
+        [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int EdgeDetection(string warpedImage, string folderPath, string fileName, int levelOfDetails);
+
+
+        //public static extern int MainFunction(string photoFullPath, string folderPath, string fileName, double[] cornerPoints, char otherTransformation, bool isWarped);
 
         // Member Variables
         public DependencyObject SelectedElement { get; set; }
@@ -43,7 +48,8 @@ namespace PhotoCAD
         int pointsNo = 0;
         double[] pointsLocationX = new double[4];
         double[] pointsLocationY = new double[4];
-        double[] pointsLocation = new double[8];
+        double[] pointsLocation = new double[8];    // C# Array of Points
+        double[] pointsArray = new double[8];       // C++ Array of Points
 
         Ellipse[] cropPoints = new Ellipse[4];
         int detectionType;
@@ -70,21 +76,23 @@ namespace PhotoCAD
 
             // Initializing DLL Function 'BordersDetection'
             IntPtr ptr = BordersDetection(MainWindowProperty.InputFileText, detectionType);
-            double[] pointsArray = new double[8];
             Marshal.Copy(ptr, pointsArray, 0, 8);
 
             // To Realse the Memory of the Pointer
             ReleaseMemory(ptr);
 
+            // Get FileName
+            FileName = System.IO.Path.GetFileNameWithoutExtension(MainWindowProperty.InputFileName_TB.Text);
+
             // Assigning Points Position
-            pointsLocation[0] = pointsLocationY[0] = pointsArray[0] * (1 / MainWindowProperty.ScaleRatio);
-            pointsLocation[1] = pointsLocationX[0] = pointsArray[1] * (1 / MainWindowProperty.ScaleRatio);
-            pointsLocation[2] = pointsLocationY[1] = pointsArray[2] * (1 / MainWindowProperty.ScaleRatio);
-            pointsLocation[3] = pointsLocationX[1] = pointsArray[3] * (1 / MainWindowProperty.ScaleRatio);
-            pointsLocation[4] = pointsLocationY[2] = pointsArray[4] * (1 / MainWindowProperty.ScaleRatio);
-            pointsLocation[5] = pointsLocationX[2] = pointsArray[5] * (1 / MainWindowProperty.ScaleRatio);
-            pointsLocation[6] = pointsLocationY[3] = pointsArray[6] * (1 / MainWindowProperty.ScaleRatio);
-            pointsLocation[7] = pointsLocationX[3] = pointsArray[7] * (1 / MainWindowProperty.ScaleRatio);
+            pointsLocation[0] = pointsLocationY[0] = pointsArray[0] / MainWindowProperty.ScaleRatio;
+            pointsLocation[1] = pointsLocationX[0] = pointsArray[1] / MainWindowProperty.ScaleRatio;
+            pointsLocation[2] = pointsLocationY[1] = pointsArray[2] / MainWindowProperty.ScaleRatio;
+            pointsLocation[3] = pointsLocationX[1] = pointsArray[3] / MainWindowProperty.ScaleRatio;
+            pointsLocation[4] = pointsLocationY[2] = pointsArray[4] / MainWindowProperty.ScaleRatio;
+            pointsLocation[5] = pointsLocationX[2] = pointsArray[5] / MainWindowProperty.ScaleRatio;
+            pointsLocation[6] = pointsLocationY[3] = pointsArray[6] / MainWindowProperty.ScaleRatio;
+            pointsLocation[7] = pointsLocationX[3] = pointsArray[7] / MainWindowProperty.ScaleRatio;
 
             // Adding Control Points to the Loaded Image
             for (int i = 0; i < 4; i++)
@@ -105,8 +113,11 @@ namespace PhotoCAD
             }
 
             char otherTransformation = 'n';
+
             // Call the Warping Function from the dll
-            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsArray, otherTransformation, false);
+            WarpImage(MainWindowProperty.InputFileText, pointsArray, otherTransformation, FileName, MainWindowProperty.OutputFolderText);
+
+            //MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsArray, otherTransformation, false);
         }
 
 
@@ -225,7 +236,9 @@ namespace PhotoCAD
         private void Clear_BTN_Click(object sender, RoutedEventArgs e)
         {
             char otherTransformation = 'c';
-            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsLocation, otherTransformation, false);
+            TransferePointsFromCanvasToCPP();
+            WarpImage(MainWindowProperty.InputFileText, pointsArray, otherTransformation, FileName, MainWindowProperty.OutputFolderText);
+
             // Clear All Array Elements
             Array.Clear(cropPoints, 0, 4);
 
@@ -237,30 +250,30 @@ namespace PhotoCAD
         private void Rotate_BTN_Click(object sender, RoutedEventArgs e)
         {
             char otherTransformation = 'r';
-            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsLocation, otherTransformation, false);
+            CloseCPPWindows();
+            TransferePointsFromCanvasToCPP();
+            WarpImage(MainWindowProperty.InputFileText, pointsArray, otherTransformation, FileName, MainWindowProperty.OutputFolderText);
         }
 
         private void Mirror_BTN_Click(object sender, RoutedEventArgs e)
         {
             char otherTransformation = 'm';
-            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsLocation, otherTransformation, false);
+            CloseCPPWindows();
+            TransferePointsFromCanvasToCPP();
+            WarpImage(MainWindowProperty.InputFileText, pointsArray, otherTransformation, FileName, MainWindowProperty.OutputFolderText);
+
         }
 
         private void FullSize_BTN_Click(object sender, RoutedEventArgs e)
         {
             char otherTransformation = 'f';
-            MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsLocation, otherTransformation, false);
+            CloseCPPWindows();
+            TransferePointsFromCanvasToCPP();
+            WarpImage(MainWindowProperty.InputFileText, pointsArray, otherTransformation, FileName, MainWindowProperty.OutputFolderText);
         }
 
         private void SaveImage_BTN_Click(object sender, RoutedEventArgs e)
         {
-            char otherTransformation = 's';
-            int success = MainFunction(MainWindowProperty.InputFileName_TB.Text, MainWindowProperty.OutputFilePath_TB.Text, FileName, pointsLocation, otherTransformation, false);
-            if (success == 0)
-            {
-                MessageBoxResult boxResult = MessageBox.Show("The Photo Saved Successfully", "Saved Succeeded",
-                       MessageBoxButton.OK, MessageBoxImage.None);
-            }
         }
 
         private void ToEdgeDetection_BTN_Click(object sender, RoutedEventArgs e)
@@ -270,13 +283,39 @@ namespace PhotoCAD
             EdgeDetection_tab.IsEnabled = true;
             EdgeDetection_tab.IsSelected = true;    //To Activate the Edge Detection Tab
 
-            LoadImageToCanvas(EdgeDetectionCanvas);
+            // Load the Edges of the image to the canvas
+            string imageEdges = MainWindowProperty.OutputFolderText + "/" + FileName + "_edges.jpg";
+            EdgeDetection(imageEdges, MainWindowProperty.OutputFolderText, FileName, 50);
+            LoadImageToCanvas(EdgeDetectionCanvas, imageEdges);
         }
 
-        public void LoadImageToCanvas(Canvas canvas)
+        private void SliderValue_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            string imageEdges = MainWindowProperty.OutputFolderText + "/" + FileName + "_edges.jpg";
+            EdgeDetection(imageEdges, MainWindowProperty.OutputFolderText, FileName, (int)SliderValue.Value);
+            LoadImageToCanvas(EdgeDetectionCanvas, imageEdges);
+        }
+
+        private void ToDXF_btn_Click(object sender, RoutedEventArgs e)
+        {
+            EdgeDetection_tab.IsEnabled = false;
+            DXF_tab.IsEnabled = true;
+            DXF_tab.IsSelected = true;    //To Activate the DXF Tab
+
+            // Load the Edges of the image to the canvas
+            string imageEdges = MainWindowProperty.OutputFolderText + "/" + FileName + "_edges.jpg";
+
+            // Function To Read the Edges and convert it to vector<Points> then DXF 
+
+
+
+            LoadImageToCanvas(EdgeDetectionCanvas, imageEdges);
+        }
+
+        private void LoadImageToCanvas(Canvas canvas, string newImagePath)
         {
             // Get the Actual Height and Width of the Image
-            using (FileStream fileStream = new FileStream(MainWindowProperty.InputFileName_TB.Text, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(newImagePath, FileMode.Open, FileAccess.Read))
             {
                 BitmapFrame frame = BitmapFrame.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
                 MainWindowProperty.ImageHeight = frame.PixelHeight;
@@ -286,7 +325,7 @@ namespace PhotoCAD
 
             // To Load the selected image to the Crop Canvas Background
             ImageBrush ib = new ImageBrush();
-            ib.ImageSource = new BitmapImage(new Uri(MainWindowProperty.InputFileName_TB.Text, UriKind.Relative));
+            ib.ImageSource = new BitmapImage(new Uri(newImagePath, UriKind.Relative));
             canvas.Background = ib;
 
             //Get the Image Width , Height and Aspect Ratio
@@ -308,7 +347,6 @@ namespace PhotoCAD
 
             //To Set the Scale Factor from Actual Image Size and the Canvas Size
             MainWindowProperty.ScaleRatio = MainWindowProperty.ImageWidth / imgWidth;
-            FileName = System.IO.Path.GetFileNameWithoutExtension(MainWindowProperty.InputFileName_TB.Text);
 
             //To Set the Canvas Size relative to the image
             canvas.Width = imgWidth;
@@ -318,6 +356,15 @@ namespace PhotoCAD
             Width = imgWidth;
             Height = (canvas.Height) + 35;
         }
+
+        private void TransferePointsFromCanvasToCPP()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                pointsArray[i] = pointsLocation[i] * MainWindowProperty.ScaleRatio;
+            }
+        }
+
 
     }
 }
