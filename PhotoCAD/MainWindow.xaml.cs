@@ -130,48 +130,8 @@ namespace PhotoCAD
                     CropWindow cropWindow = new CropWindow();
                     cropWindow.MainWindowProperty = this;
 
-                    // Get the Actual Height and Width of the Image
-                    using (FileStream fileStream = new FileStream(InputFileName_TB.Text, FileMode.Open, FileAccess.Read))
-                    {
-                        BitmapFrame frame = BitmapFrame.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
-                        ImageHeight = frame.PixelHeight;
-                        ImageWidth = frame.PixelWidth;
-                        ImageRatio = ImageWidth / ImageHeight;
-                    }
-
-                    // To Load the selected image to the Crop Canvas Background
-                    ImageBrush ib = new ImageBrush();
-                    ib.ImageSource = new BitmapImage(new Uri(InputFileName_TB.Text, UriKind.Relative));
-                    cropWindow.CropCanvas.Background = ib;
-
-                    //Get the Image Width , Height and Aspect Ratio
-                    double imgWidth = ib.ImageSource.Width;
-                    double imgHeight = ib.ImageSource.Height;
-                    double imgRatio = imgHeight / imgWidth;
-
-
-                    if (imgWidth > 1450)  //Resize the image if it is too Big
-                    {
-                        imgWidth = 1450;
-                        imgHeight = imgWidth * imgRatio;
-                    }
-                    else if (imgWidth < 600)  //Resize the image if it is too Small
-                    {
-                        imgWidth = 600;
-                        imgHeight = imgWidth * imgRatio;
-                    }
-
-                    //To Set the Scale Factor from Actual Image Size and the Canvas Size
-                    ScaleRatio = ImageWidth / imgWidth;
-                    cropWindow.FileName = System.IO.Path.GetFileName(InputFileName_TB.Text);
-
-                    //To Set the Canvas Size relative to the image
-                    cropWindow.CropCanvas.Width = imgWidth;
-                    cropWindow.CropCanvas.Height = imgHeight;
-
-                    //To Set the Canvas Size relative to the Canvas/Image
-                    cropWindow.Width = imgWidth + 110;
-                    cropWindow.Height = (cropWindow.CropCanvas.Height) + 35;
+                    // Load the Image to the Canvas
+                    LoadImageToCanvas(cropWindow);
                     cropWindow.Show();
 
                 }
@@ -215,6 +175,54 @@ namespace PhotoCAD
                 Plan_RB.IsEnabled = true;
                 WhitePaper_RB.IsEnabled = true;
             }
+
+
+        }
+
+        public void LoadImageToCanvas(CropWindow window)
+        {
+            // Get the Actual Height and Width of the Image
+            using (FileStream fileStream = new FileStream(InputFileName_TB.Text, FileMode.Open, FileAccess.Read))
+            {
+                BitmapFrame frame = BitmapFrame.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
+                ImageHeight = frame.PixelHeight;
+                ImageWidth = frame.PixelWidth;
+                ImageRatio = ImageWidth / ImageHeight;
+            }
+
+            // To Load the selected image to the Crop Canvas Background
+            ImageBrush ib = new ImageBrush();
+            ib.ImageSource = new BitmapImage(new Uri(InputFileName_TB.Text, UriKind.Relative));
+            window.CropCanvas.Background = ib;
+
+            //Get the Image Width , Height and Aspect Ratio
+            double imgWidth = ib.ImageSource.Width;
+            double imgHeight = ib.ImageSource.Height;
+            double imgRatio = imgHeight / imgWidth;
+
+
+            if (imgWidth > 1250)  //Resize the image if it is too Big
+            {
+                imgWidth = 1250;
+                imgHeight = imgWidth * imgRatio;
+            }
+            else if (imgWidth < 600)  //Resize the image if it is too Small
+            {
+                imgWidth = 600;
+                imgHeight = imgWidth * imgRatio;
+            }
+
+            //To Set the Scale Factor from Actual Image Size and the Canvas Size
+            ScaleRatio = ImageWidth / imgWidth;
+            window.FileName = System.IO.Path.GetFileNameWithoutExtension(InputFileName_TB.Text);
+
+            //To Set the Canvas Size relative to the image
+            window.CropCanvas.Width = imgWidth;
+            window.CropCanvas.Height = imgHeight;
+
+            //To Set the Canvas Size relative to the Canvas/Image
+            window.Width = imgWidth;
+            window.Height = (window.CropCanvas.Height);
         }
     }
 }

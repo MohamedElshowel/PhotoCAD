@@ -1,0 +1,23 @@
+﻿<Window x:Class="PhotoCAD.DetailsLevel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PhotoCAD"
+        mc:Ignorable="d"
+        Title="DetailsLevel" Height="auto" Width="auto">
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Please choose Level of Details" Padding="40 10"/>
+            <Button Grid.Column="1" Margin="40 6" Content="Next >" Name="F"/>
+        </Grid>
+        <DockPanel VerticalAlignment="Top" Margin="40 5">
+            <TextBox Text="{Binding ElementName=slValue, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+            <Slider Maximum="100" TickPlacement="BottomRight" TickFrequency="20" IsSnapToTickEnabled="True" Name="SliderValue" />
+        </DockPanel>
+    </StackPanel>
+</Window>

@@ -5,20 +5,46 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PhotoCAD"
         mc:Ignorable="d"
-        Title="CropWindow" Height="auto" Width="auto" Loaded="Window_Loaded">
-    <StackPanel Orientation="Horizontal">
-        <StackPanel Margin="0 60">
-            <Button Content="Next >>" Padding="10" Margin="7 10"/>
-            <Button Content="Save Image" Padding="10" Margin="7 10" Name="SaveImage_BTN" Click="SaveImage_BTN_Click"/>
-            <Button Content="Clear" Padding="10" Margin="7 10" Name="Clear_BTN" Click="Clear_BTN_Click"/>
-            <Button Content="Full Size" Padding="10" Margin="7 10" Name="FullSize_BTN" Click="FullSize_BTN_Click"/>
-            <Button Content="Rotate" Padding="10" Margin="7 10" Name="Rotate_BTN" Click="Rotate_BTN_Click"/>
-            <Button Content="Mirror" Padding="10" Margin="7 10" Name="Mirror_BTN" Click="Mirror_BTN_Click"/>
-        </StackPanel>
+        Title="PhotoCAD Workspace" Height="auto" Width="auto" Loaded="Window_Loaded">
+    <Grid>
+        <TabControl Name="PhotoCAD_Tabs">
+            <TabItem Header="Image Warping" Width="110" Name="ImageWarping_tab">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="Next >>" Padding="10" Margin="7 10" Name="ToEdgeDetection_BTN" Click="ToEdgeDetection_BTN_Click"/>
+                        <Button Content="Save Image" Padding="10" Margin="7 10" Name="SaveImage_BTN" Click="SaveImage_BTN_Click"/>
+                        <Button Content="Clear" Padding="10" Margin="7 10" Name="Clear_BTN" Click="Clear_BTN_Click"/>
+                        <Button Content="Full Size" Padding="10" Margin="7 10" Name="FullSize_BTN" Click="FullSize_BTN_Click"/>
+                        <Button Content="Rotate" Padding="10" Margin="7 10" Name="Rotate_BTN" Click="Rotate_BTN_Click"/>
+                        <Button Content="Mirror" Padding="10" Margin="7 10" Name="Mirror_BTN" Click="Mirror_BTN_Click"/>
+                    </StackPanel>
 
-        <Border BorderThickness="1" BorderBrush="Black">
-            <Canvas Background="LightGoldenrodYellow" Name="CropCanvas" MouseDown="CropCanvas_MouseDown" MouseMove="CropCanvas_MouseMove" MouseUp="CropCanvas_MouseUp">
-            </Canvas>
-        </Border>
-    </StackPanel>
+                    <Border BorderThickness="1" BorderBrush="Black">
+                        <Canvas Background="LightGoldenrodYellow" Name="CropCanvas" MouseDown="CropCanvas_MouseDown" MouseMove="CropCanvas_MouseMove" MouseUp="CropCanvas_MouseUp">
+                        </Canvas>
+                    </Border>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Edge Detection" IsEnabled="False" Width="110" Name="EdgeDetection_tab">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Please choose Level of Details" Padding="60 10"/>
+                        <Button Grid.Column="1" Margin="20 3 60 0" Content="Next >>" Name="F"/>
+                    </Grid>
+                    <DockPanel VerticalAlignment="Top" Margin="60 5">
+                        <TextBox Text="{Binding ElementName=slValue, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                        <Slider Maximum="100" TickPlacement="BottomRight" TickFrequency="20" IsSnapToTickEnabled="True" Name="SliderValue" />
+                    </DockPanel>
+                    <StackPanel>
+                    <Canvas Background="LightGoldenrodYellow" Name="EdgeDetectionCanvas" MouseDown="CropCanvas_MouseDown" MouseMove="CropCanvas_MouseMove" MouseUp="CropCanvas_MouseUp"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="DXF file" IsEnabled="False" Width="110" Name="DXF_tab"/>
+        </TabControl>
+    </Grid>
 </Window>

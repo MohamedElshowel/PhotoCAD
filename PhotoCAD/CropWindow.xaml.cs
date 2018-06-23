@@ -1,6 +1,7 @@
 ﻿using Design.Presentation.Geometry;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -261,5 +262,62 @@ namespace PhotoCAD
                        MessageBoxButton.OK, MessageBoxImage.None);
             }
         }
+
+        private void ToEdgeDetection_BTN_Click(object sender, RoutedEventArgs e)
+        {
+            CloseCPPWindows();                        //To Close the C++ Window
+            ImageWarping_tab.IsEnabled = false;
+            EdgeDetection_tab.IsEnabled = true;
+            EdgeDetection_tab.IsSelected = true;    //To Activate the Edge Detection Tab
+
+            LoadImageToCanvas(EdgeDetectionCanvas);
+        }
+
+        public void LoadImageToCanvas(Canvas canvas)
+        {
+            // Get the Actual Height and Width of the Image
+            using (FileStream fileStream = new FileStream(MainWindowProperty.InputFileName_TB.Text, FileMode.Open, FileAccess.Read))
+            {
+                BitmapFrame frame = BitmapFrame.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
+                MainWindowProperty.ImageHeight = frame.PixelHeight;
+                MainWindowProperty.ImageWidth = frame.PixelWidth;
+                MainWindowProperty.ImageRatio = MainWindowProperty.ImageWidth / MainWindowProperty.ImageHeight;
+            }
+
+            // To Load the selected image to the Crop Canvas Background
+            ImageBrush ib = new ImageBrush();
+            ib.ImageSource = new BitmapImage(new Uri(MainWindowProperty.InputFileName_TB.Text, UriKind.Relative));
+            canvas.Background = ib;
+
+            //Get the Image Width , Height and Aspect Ratio
+            double imgWidth = ib.ImageSource.Width;
+            double imgHeight = ib.ImageSource.Height;
+            double imgRatio = imgHeight / imgWidth;
+
+
+            if (imgWidth > 1200)  //Resize the image if it is too Big
+            {
+                imgWidth = 1200;
+                imgHeight = imgWidth * imgRatio;
+            }
+            else if (imgWidth < 600)  //Resize the image if it is too Small
+            {
+                imgWidth = 600;
+                imgHeight = imgWidth * imgRatio;
+            }
+
+            //To Set the Scale Factor from Actual Image Size and the Canvas Size
+            MainWindowProperty.ScaleRatio = MainWindowProperty.ImageWidth / imgWidth;
+            FileName = System.IO.Path.GetFileNameWithoutExtension(MainWindowProperty.InputFileName_TB.Text);
+
+            //To Set the Canvas Size relative to the image
+            canvas.Width = imgWidth;
+            canvas.Height = imgHeight;
+
+            //To Set the Canvas Size relative to the Canvas/Image
+            Width = imgWidth;
+            Height = (canvas.Height) + 35;
+        }
+
     }
 }
