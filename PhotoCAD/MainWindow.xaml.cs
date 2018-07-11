@@ -80,8 +80,8 @@ namespace PhotoCAD
                 InputFileName_TB.Text = fileDialog.FileName;
                 InputFileText = fileDialog.FileName;
 
-                // Pass the Folder to the 'OutputFolder_TB'
-                OutputFilePath_TB.Text = System.IO.Path.GetDirectoryName(InputFileText);
+                //// Pass the Folder to the 'OutputFolder_TB'
+                //OutputFilePath_TB.Text = System.IO.Path.GetDirectoryName(InputFileText);
 
                 //Load the Image in the Application
                 ImageIcon.Source = (ImageSource)new ImageSourceConverter().ConvertFrom(fileDialog.FileName);

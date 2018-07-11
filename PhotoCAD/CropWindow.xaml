@@ -7,16 +7,42 @@
         mc:Ignorable="d"
         Title="PhotoCAD Workspace" Height="auto" Width="auto" Loaded="Window_Loaded">
     <Grid>
-        <TabControl Name="PhotoCAD_Tabs">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File" Width="45">
+                    <MenuItem Header="_Open" >
+                        <!--<MenuItem.Icon>
+                            <Image Source="D:/MyPhoto.jpg"/>
+                        </MenuItem.Icon>-->
+                    </MenuItem>
+                    <MenuItem Header="_Save" />
+                    <Separator />
+                    <MenuItem Header="Se_ttings"/>
+                    <Separator />
+                    <MenuItem Header="_Exit" Name="Menu_Exit" Click="Menu_Exit_Click"/>
+                </MenuItem>
+                <MenuItem Header="_Help" Width="45">
+                    <MenuItem Header="_Help"/>
+                    <MenuItem Header="_Watch Demo"/>
+                    <MenuItem Header="_About" Name="Menu_About" Click="Menu_About_Click"/>
+                    <Separator/>
+                    <MenuItem Header="_Check for Updates"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        <TabControl Name="PhotoCAD_Tabs" Grid.Row="1">
             <TabItem Header="Image Warping" Width="110" Name="ImageWarping_tab">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Content="Next >>" Padding="10" Margin="7 10" Name="ToEdgeDetection_BTN" Click="ToEdgeDetection_BTN_Click"/>
-                        <Button Content="Save Image" Padding="10" Margin="7 10" Name="SaveImage_BTN" Click="SaveImage_BTN_Click"/>
                         <Button Content="Clear" Padding="10" Margin="7 10" Name="Clear_BTN" Click="Clear_BTN_Click"/>
-                        <Button Content="Full Size" Padding="10" Margin="7 10" Name="FullSize_BTN" Click="FullSize_BTN_Click"/>
                         <Button Content="Rotate" Padding="10" Margin="7 10" Name="Rotate_BTN" Click="Rotate_BTN_Click"/>
                         <Button Content="Mirror" Padding="10" Margin="7 10" Name="Mirror_BTN" Click="Mirror_BTN_Click"/>
+                        <Button Content="Full Size" Padding="10" Margin="7 10" Name="FullSize_BTN" Click="FullSize_BTN_Click"/>
+                        <Button Content="Next >>" Padding="10" Margin="7 10" Name="ToEdgeDetection_BTN" Click="ToEdgeDetection_BTN_Click"/>
                     </StackPanel>
 
                     <Canvas Background="LightGoldenrodYellow" Name="CropCanvas" MouseDown="CropCanvas_MouseDown" MouseMove="CropCanvas_MouseMove" MouseUp="CropCanvas_MouseUp"/>
@@ -30,10 +56,9 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Please choose Level of Details" Padding="60 10"/>
-                        <Button Grid.Column="1" Margin="20 3 60 0" Content="Next >>" Name="ToDXF_btn" Click="ToDXF_btn_Click"/>
+                        <Button Grid.Column="1" Margin="20 3 40 0" Content="Next >>" Name="ToDXF_btn" Click="ToDXF_btn_Click" Width="70"/>
                     </Grid>
                     <DockPanel VerticalAlignment="Top" Margin="60 5">
-                        <TextBox Text="{Binding ElementName=slValue, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
                         <Slider  Name="SliderValue" Minimum="0" Maximum="100" AutoToolTipPlacement="BottomRight" TickPlacement="BottomRight" TickFrequency="10" IsSnapToTickEnabled="True" Value="50" RenderTransformOrigin="0.615,0.567" Thumb.DragCompleted="SliderValue_DragCompleted"/>
                     </DockPanel>
                     <StackPanel>
@@ -41,7 +66,24 @@
                     </StackPanel>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="DXF file" IsEnabled="False" Width="110" Name="DXF_tab"/>
+            <TabItem Header="DXF file" IsEnabled="False" Width="110" Name="DXF_tab">
+                <StackPanel>
+                    <TextBlock Text="Yout DXF file has been created successfully" HorizontalAlignment="Center" Padding="100 60 100 30"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3*"/>
+
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="1" HorizontalAlignment="Center" Content="Open File" Name="OpenFile_btn" Width="70" Height="20" Click="OpenFile_btn_Click"/>
+                        <Button Grid.Column="2" HorizontalAlignment="Center" Content="Finish" Name="Finish_btn" Width="70" Height="20" Click="Finish_btn_Click"/>
+                        <Button Grid.Column="3" HorizontalAlignment="Center" Content="Finish" Name="Exit_btn" Width="70" Height="20" Click="Exit_btn_Click"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

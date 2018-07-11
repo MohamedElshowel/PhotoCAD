@@ -25,18 +25,21 @@ namespace PhotoCAD
         public MainWindow MainWindowProperty { get; set; }
 
         // Importing DLL functions
-        [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
+        //[DllImport(@"D:\ITI_CEI_2017\Graduation Project\Desktop Version - WPF\PhotoCAD\PhotoCAD\bin\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int CloseCPPWindows();
-        [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr BordersDetection(string photoPath, int detectionType);
-        [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int ReleaseMemory(IntPtr ptr);
-        [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int Return20();
-        [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int WarpImage(string photoPath, double[] cornerPoints, char otherTransformation, string fileName, string folderPath);
-        [DllImport(@"D:\ITI_CEI_2017\PhotoCAD\x64\Debug\PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int EdgeDetection(string warpedImage, string folderPath, string fileName, int levelOfDetails);
+        [DllImport("PhotoCAD.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int CreateDXF(string warpedImage, string folderPath, string fileName, int detailsLevel);
 
 
         //public static extern int MainFunction(string photoFullPath, string folderPath, string fileName, double[] cornerPoints, char otherTransformation, bool isWarped);
@@ -284,8 +287,9 @@ namespace PhotoCAD
             EdgeDetection_tab.IsSelected = true;    //To Activate the Edge Detection Tab
 
             // Load the Edges of the image to the canvas
+            string warpedImage = MainWindowProperty.OutputFolderText + "/" + FileName + "_warped.jpg";
+            EdgeDetection(warpedImage, MainWindowProperty.OutputFolderText, FileName, 50);
             string imageEdges = MainWindowProperty.OutputFolderText + "/" + FileName + "_edges.jpg";
-            EdgeDetection(imageEdges, MainWindowProperty.OutputFolderText, FileName, 50);
             LoadImageToCanvas(EdgeDetectionCanvas, imageEdges);
         }
 
@@ -304,12 +308,13 @@ namespace PhotoCAD
 
             // Load the Edges of the image to the canvas
             string imageEdges = MainWindowProperty.OutputFolderText + "/" + FileName + "_edges.jpg";
+            //
 
             // Function To Read the Edges and convert it to vector<Points> then DXF 
+            string warpedImage = MainWindowProperty.OutputFolderText + "/" + FileName + "_warped.jpg";
+            CreateDXF(warpedImage, MainWindowProperty.OutputFolderText, FileName, 50);
 
-
-
-            LoadImageToCanvas(EdgeDetectionCanvas, imageEdges);
+            //LoadImageToCanvas(EdgeDetectionCanvas, imageEdges);
         }
 
         private void LoadImageToCanvas(Canvas canvas, string newImagePath)
@@ -365,6 +370,43 @@ namespace PhotoCAD
             }
         }
 
+        private void Finish_btn_Click(object sender, RoutedEventArgs e)
+        {
+            // Restart the Application
+            System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
+        }
 
+        private void OpenFile_btn_Click(object sender, RoutedEventArgs e)
+        {
+            //Open DXF File
+            string fileDXF = MainWindowProperty.OutputFolderText + "/" + FileName + ".dxf";
+            System.Diagnostics.Process.Start(fileDXF);
+
+        }
+
+        #region Menu Items
+        private void Menu_About_Click(object sender, RoutedEventArgs e)
+        {
+            About aboutWindow = new About();
+            aboutWindow.Show();
+        }
+        private void Menu_Exit_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to close PhotoCAD?",
+                                          "Confirmation",
+                                          MessageBoxButton.YesNo,
+                                          MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
+        }
+        #endregion
+
+        private void Exit_btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
