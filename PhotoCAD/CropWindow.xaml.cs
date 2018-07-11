@@ -370,7 +370,7 @@ namespace PhotoCAD
             }
         }
 
-        private void Finish_btn_Click(object sender, RoutedEventArgs e)
+        private void Restart_btn_Click(object sender, RoutedEventArgs e)
         {
             // Restart the Application
             System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
@@ -406,7 +406,7 @@ namespace PhotoCAD
 
         private void Exit_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            Application.Current.Shutdown();
         }
     }
 }

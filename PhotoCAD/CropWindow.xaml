@@ -79,8 +79,8 @@
 
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="1" HorizontalAlignment="Center" Content="Open File" Name="OpenFile_btn" Width="70" Height="20" Click="OpenFile_btn_Click"/>
-                        <Button Grid.Column="2" HorizontalAlignment="Center" Content="Finish" Name="Finish_btn" Width="70" Height="20" Click="Finish_btn_Click"/>
-                        <Button Grid.Column="3" HorizontalAlignment="Center" Content="Finish" Name="Exit_btn" Width="70" Height="20" Click="Exit_btn_Click"/>
+                        <Button Grid.Column="2" HorizontalAlignment="Center" Content="Restart" Name="Restart_btn" Width="70" Height="20" Click="Restart_btn_Click"/>
+                        <Button Grid.Column="3" HorizontalAlignment="Center" Content="Exit" Name="Exit_btn" Width="70" Height="20" Click="Exit_btn_Click"/>
                     </Grid>
                 </StackPanel>
             </TabItem>
