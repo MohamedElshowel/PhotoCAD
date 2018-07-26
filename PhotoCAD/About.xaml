@@ -17,7 +17,7 @@
                 <!--<RowDefinition Height="20"/>-->
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="PhotoCAD v1.0" VerticalAlignment="Top" FontSize="17" HorizontalAlignment="Center"/>
-            <Image Grid.Row="1" Name="AboutIcon" Source="D:\ITI_CEI_2017/Graduation Project/Desktop Version - WPF/ITI.GraduationProject.PhotoCAD/Icons/Archivelopers_Black.png" VerticalAlignment="Center"/>
+            <Image Grid.Row="1" Name="AboutIcon" Source="D:\ITI_CEI_2017\DEVINEERS\Logo\Devineers_Logo_Black.png" VerticalAlignment="Center"/>
             <TextBlock Grid.Row="2" Text="Copyright © 2017 - 2018" TextAlignment="Center"/>
             <!--<TextBlock Grid.Row="3" Text="&lt;Archivelopers>" TextAlignment="Center" FontWeight="Bold"/>-->
             <TextBlock Grid.Row="3" Text="Author: Mohamed Elshowel" TextAlignment="Center" Name="Author_blk" />

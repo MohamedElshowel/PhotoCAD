@@ -25,7 +25,7 @@ namespace PhotoCAD
             InitializeComponent();
 
             // Load '<Archivelopers>' logo from the 'Icons' folder
-            AboutIcon.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + @"Icons\Archivelopers_Black.png"));
+            AboutIcon.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + @"Icons\Devineers_Logo_Black.png"));
         }
 
         private void Author_blk_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
